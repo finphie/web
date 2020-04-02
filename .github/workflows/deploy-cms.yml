@@ -1,0 +1,27 @@
+name: Deploy(CMS)
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'cms/themes/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2      
+      
+    - name: Deploy themes
+      run: |
+        cd cms
+        echo "$CMS_SSH_KEY" > key && chmod 600 key
+        rsync -a --delete -e "ssh -i key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p $CMS_SSH_PORT" /themes/ $CMS_SSH_USER@$CMS_SSH_HOST:${CMS_THEME_PATH}
+      env:
+        CMS_SSH_HOST: ${{ secrets.CMS_SSH_HOST }}
+        CMS_SSH_PORT: ${{ secrets.CMS_SSH_PORT }}
+        CMS_SSH_USER: ${{ secrets.CMS_SSH_USER }}
+        CMS_SSH_KEY: ${{ secrets.CMS_SSH_KEY }}
+        CMS_THEME_PATH: ${{ secrets.CMS_THEME_PATH }}
