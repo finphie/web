@@ -18,7 +18,7 @@ jobs:
       run: |
         cd cms
         echo "$CMS_SSH_KEY" > key && chmod 600 key
-        rsync -a --delete -q -e "ssh -i key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p $CMS_SSH_PORT" themes/ $CMS_SSH_USER@$CMS_SSH_HOST:${CMS_THEME_PATH}
+        rsync -a -q --delete -e "ssh -q -i key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p $CMS_SSH_PORT" themes/ $CMS_SSH_USER@$CMS_SSH_HOST:${CMS_THEME_PATH}
       env:
         CMS_SSH_HOST: ${{ secrets.CMS_SSH_HOST }}
         CMS_SSH_PORT: ${{ secrets.CMS_SSH_PORT }}
